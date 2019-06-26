@@ -1,8 +1,8 @@
-var player1 = prompt("Player One: Enter you name , you will be BLUE");
-var player1Colour = 'rgb(86, 151, 255)';
+var player1 = prompt("Player One, enter your name. You will be RED.");
+var player1Colour = 'rgb(237, 45, 73)';
 
-var player2 = prompt("Player One: Enter you name , you will be RED  ");
-var player2Colour = 'rgb(237, 45, 73)';
+var player2 = prompt("Player Two, enter your name. You will be BLUE.");
+var player2Colour = 'rgb(86, 151, 255)';
 
 var game_on = true;
 var table = $('table tr');
@@ -14,25 +14,25 @@ function reportWin(rowNum,colNum){
 }
 
 function changeColour(rowIndex, colIndex, colour){
-    return table.eq(rowIndex).find('td').eq(colIndex).find('button').css('background-colour',colour);
+    return table.eq(rowIndex).find('td').eq(colIndex).find('button').css('background-color',colour);
 }
 
 function returnColour(rowIndex, colIndex){
-    return table.eq(rowIndex).find('td').eq(colIndex).find('button').css('background-colour');
+    return table.eq(rowIndex).find('td').eq(colIndex).find('button').css('background-color');
 }
 
 function checkBottom(colIndex){
-    var colourReport = returnColor(5,colIndex);
+    var colourReport = returnColour(5,colIndex);
     for(var row = 5; row > -1; row--){
-        colourReport = returnColor(row,colIndex);
-        if(colourReport === 'rbg(128, 128, 128)'){
+        colourReport = returnColour(row,colIndex);
+        if(colourReport === 'rgb(128, 128, 128)'){
             return row;
         }
     }
 }
 
 function colourMatchCheck(one,two,three,four){
-    return (one === two && one === three && one === four && one !== 'rbg(128, 128, 128)' && one !== undefined)
+    return (one === two && one === three && one === four && one !== 'rgb(128, 128, 128)' && one !== undefined);
 }
 
 function horizontalWinCheck(){
@@ -80,4 +80,37 @@ function diagonalWinCheck(){
         }
     }
 }
+
+var currentPlayer = 1;
+var currentName = player1;
+var currentColour = player1Colour;
+
+$('h3').text(player1+", it's your turn. Click on a column to drop your chip")
+$('.board button').on('click',function(){
+    if(game_on === true){
+        var col = $(this).closest('td').index();
+        var bottomAvail = checkBottom(col);
+
+        changeColour(bottomAvail,col,currentColour);
+
+        if (horizontalWinCheck() || verticalWinCheck() || diagonalWinCheck()){
+            $('h1').text("Congratulations "+currentName+", you have won!");
+            $('h2').text("");
+            $('h3').fadeOut("fast");
+            game_on = false;
+        }
+
+        currentPlayer = currentPlayer * (-1);
+        if(currentPlayer === 1){
+            currentName = player1;
+            $('h3').text(currentName + ", it's your turn")
+            currentColour = player1Colour;
+        }else{
+            currentName = player2;
+            $('h3').text(currentName + ", it's your turn")
+            currentColour = player2Colour;
+        }
+    }
+
+})
 
